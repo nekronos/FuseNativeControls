@@ -1,6 +1,6 @@
 # FuseNativeControls
 
-This library provides cross-platform abstractions of native Android and iOS controls for [fuse](www.fusetools.com).
+This library provides cross-platform abstractions of native Android and iOS controls for [fuse](http://www.fusetools.com).
 
 Implemented so far:
 - DatePicker
