@@ -8,23 +8,20 @@ using Fuse.Controls.Native;
 
 namespace Native.Android
 {
-	extern(Android) class DatePicker : 
-		Fuse.Controls.Native.Android.LeafView,
-		IDatePickerView
+	extern(Android) class DatePickerView : Fuse.Controls.Native.Android.LeafView
 	{
+		Action<LocalDate> _onDateChangedHandler;
 
-		IDatePickerHost _host;
-
-		public DatePicker(IDatePickerHost host) : base(Create())
+		public DatePickerView(Action<LocalDate> onDateChangedHandler) : base(Create())
 		{
-			_host = host;
+			_onDateChangedHandler = onDateChangedHandler;
 			Init(Handle, OnDateChanged);
 		}
 
 		public override void Dispose()
 		{
 			base.Dispose();
-			_host = null;
+			_onDateChangedHandler = null;
 		}
 
 		// Month starts at 0 in Java
@@ -56,7 +53,7 @@ namespace Native.Android
 		
 		void OnDateChanged()
 		{
-			_host.OnDateChanged(CurrentDate);
+			_onDateChangedHandler(CurrentDate);
 		}
 
 		[Foreign(Language.Java)]

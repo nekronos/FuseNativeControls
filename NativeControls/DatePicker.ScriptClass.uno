@@ -45,26 +45,17 @@ namespace Native
 
 		static void setDate(Context context, DatePicker datePicker, object[] args)
 		{
-			var localDate = ArgsToLocalDate(args);
-			var dp = datePicker.DatePickerView;
-			if (dp != null)
-				dp.CurrentDate = localDate;
+			datePicker.CurrentDate = ArgsToLocalDate(args);
 		}
 
 		static void setMinDate(Context context, DatePicker datePicker, object[] args)
 		{
-			var localDate = ArgsToLocalDate(args);
-			var dp = datePicker.DatePickerView;
-			if (dp != null)
-				dp.MinDate = localDate;
+			datePicker.MinDate = ArgsToLocalDate(args);
 		}
 
 		static void setMaxDate(Context context, DatePicker datePicker, object[] args)
 		{
-			var localDate = ArgsToLocalDate(args);
-			var dp = datePicker.DatePickerView;
-			if (dp != null)
-				dp.MaxDate = localDate;
+			datePicker.MaxDate = ArgsToLocalDate(args);
 		}
 
 		static LocalDate ArgsToLocalDate(object[] args)

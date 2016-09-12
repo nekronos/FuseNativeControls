@@ -10,64 +10,72 @@ using Fuse.Scripting;
 
 namespace Native
 {
-	internal interface IDatePickerHost
-	{
-		void OnDateChanged(LocalDate date);
-	}
+	using iOS;
+	using Android;
 
-	internal interface IDatePickerView
+	extern(!iOS && !Android) class DatePickerView
 	{
-		LocalDate CurrentDate { get; set; }
-		LocalDate MinDate { set; }
-		LocalDate MaxDate { set; }
-	}
-	
-	internal class DummyDatePickerView : IDatePickerView
-	{
-		static DummyDatePickerView _instance;
-		public static IDatePickerView Instance
-		{
-			get { return _instance ?? (_instance = new DummyDatePickerView()); }
-		}
-
-		LocalDate IDatePickerView.CurrentDate
+		public LocalDate CurrentDate
 		{
 			get { return ZonedDateTime.Now.Date; }
 			set { }
 		}
-		LocalDate IDatePickerView.MinDate { set { } }
-		LocalDate IDatePickerView.MaxDate { set { } }
+		public LocalDate MinDate { set { } }
+		public LocalDate MaxDate { set { } }
 	}
 
-	public partial class DatePicker : Panel, IDatePickerHost
+	public partial class DatePicker : Panel
 	{
 		static Selector _currentDateName = "CurrentDate";
 
-		LocalDate CurrentDate
+		public LocalDate CurrentDate
 		{
 			get { return DatePickerView.CurrentDate; }
 			set { DatePickerView.CurrentDate = value; }
 		}
 
-		IDatePickerView DatePickerView
+		public LocalDate MinDate
 		{
-			get { return (NativeView as IDatePickerView) ?? DummyDatePickerView.Instance; }
+			set { DatePickerView.MinDate = value; }
 		}
 
-		void IDatePickerHost.OnDateChanged(LocalDate date)
+		public LocalDate MaxDate
+		{
+			set { DatePickerView.MaxDate = value; }
+		}	
+
+		DatePickerView _datePickerView;
+		DatePickerView DatePickerView
+		{
+			get
+			{
+				if (_datePickerView == null)
+				{
+					if defined(iOS || Android)
+						_datePickerView = new DatePickerView(OnDateChanged);
+					else
+						_datePickerView = new DatePickerView();
+				}
+				return _datePickerView;
+			}
+		}
+
+		internal void OnDateChanged(LocalDate date)
 		{
 			OnPropertyChanged(_currentDateName, null);
 		}
 
+		protected override void OnUnrooted()
+		{
+			base.OnUnrooted();
+			_datePickerView = null;
+		}
+
 		protected override IView CreateNativeView()
 		{
-			if defined(Android)
+			if defined(Android || iOS)
 			{
-				return new Native.Android.DatePicker(this);
-			}
-			else if defined(iOS)
-			{
-				return new Native.iOS.DatePicker(this);
+				return (IView)DatePickerView;
 			}
 			else
 			{

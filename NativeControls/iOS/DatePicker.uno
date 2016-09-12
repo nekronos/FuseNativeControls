@@ -9,17 +9,15 @@ using Fuse.Controls.Native;
 namespace Native.iOS
 {
 	[Require("Source.Include", "UIKit/UIKit.h")]
-	extern(iOS) class DatePicker : 
-		Fuse.Controls.Native.iOS.LeafView,
-		IDatePickerView
+	extern(iOS) class DatePickerView : Fuse.Controls.Native.iOS.LeafView
 	{
 
-		IDatePickerHost _host;
+		Action<LocalDate> _onDateChangedHandler;
 		IDisposable _valueChangedEvent;
 
-		public DatePicker(IDatePickerHost host) : base(Create())
+		public DatePickerView(Action<LocalDate> onDateChangedHandler) : base(Create())
 		{
-			_host = host;
+			_onDateChangedHandler = onDateChangedHandler;
 			_valueChangedEvent = UIControlEvent.AddValueChangedCallback(Handle, OnDateChanged);
 		}
 
@@ -28,7 +26,7 @@ namespace Native.iOS
 			base.Dispose();
 			_valueChangedEvent.Dispose();
 			_valueChangedEvent = null;
-			_host = null;
+			_onDateChangedHandler = null;
 		}
 
 		void OnDateChanged(ObjC.Object sender, ObjC.Object args)
@@ -37,10 +35,10 @@ namespace Native.iOS
 			int month = 0;
 			int day = 0;
 			GetDate(Handle, out year, out month, out day);
-			_host.OnDateChanged(new LocalDate(year, month, day));
+			_onDateChangedHandler(new LocalDate(year, month, day));
 		}
 
-		LocalDate IDatePickerView.CurrentDate
+		public LocalDate CurrentDate
 		{
 			get
 			{
@@ -53,12 +51,12 @@ namespace Native.iOS
 			set { SetDate(Handle, MakeNSDate(value.Year, value.Month, value.Day)); }
 		}
 
-		LocalDate IDatePickerView.MinDate
+		public LocalDate MinDate
 		{
 			set { SetMinDate(Handle, MakeNSDate(value.Year, value.Month, value.Day)); }
 		}
 		
-		LocalDate IDatePickerView.MaxDate
+		public LocalDate MaxDate
 		{
 			set { SetMaxDate(Handle, MakeNSDate(value.Year, value.Month, value.Day)); }
 		}
