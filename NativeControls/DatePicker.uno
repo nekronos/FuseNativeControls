@@ -22,6 +22,7 @@ namespace Native
 		}
 		public LocalDate MinDate { set { } }
 		public LocalDate MaxDate { set { } }
+		public DatePickerView(Action<LocalDate> handler) { }
 	}
 
 	public partial class DatePicker : Panel
@@ -50,12 +51,8 @@ namespace Native
 			get
 			{
 				if (_datePickerView == null)
-				{
-					if defined(iOS || Android)
-						_datePickerView = new DatePickerView(OnDateChanged);
-					else
-						_datePickerView = new DatePickerView();
-				}
+					_datePickerView = new DatePickerView(OnDateChanged);
+					
 				return _datePickerView;
 			}
 		}
