@@ -17,7 +17,9 @@ namespace Native
 		static DatePicker()
 		{
 			ScriptClass.Register(typeof(DatePicker),
-				new ScriptMethod<DatePicker>("setDate", setDate, ExecutionThread.MainThread));
+				new ScriptMethod<DatePicker>("setDate", setDate, ExecutionThread.MainThread),
+				new ScriptMethod<DatePicker>("setMinDate", setMinDate, ExecutionThread.MainThread),
+				new ScriptMethod<DatePicker>("setMaxDate", setMaxDate, ExecutionThread.MainThread));
 		}
 
 		static void setDate(Context context, DatePicker datePicker, object[] args)
@@ -27,6 +29,26 @@ namespace Native
 			if (dp != null)
 			{
 				dp.SetDate(localDate);
+			}
+		}
+
+		static void setMinDate(Context context, DatePicker datePicker, object[] args)
+		{
+			var localDate = ArgsToLocalDate(args);
+			var dp = datePicker.DatePickerView;
+			if (dp != null)
+			{
+				dp.SetMinDate(localDate);
+			}
+		}
+
+		static void setMaxDate(Context context, DatePicker datePicker, object[] args)
+		{
+			var localDate = ArgsToLocalDate(args);
+			var dp = datePicker.DatePickerView;
+			if (dp != null)
+			{
+				dp.SetMaxDate(localDate);
 			}
 		}
 
