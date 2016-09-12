@@ -3,6 +3,9 @@
     "Fuse",
     "FuseJS"
   ],
+  "Projects": [
+  	"../NativeControls/NativeControls.unoproj",
+  ],
   "Includes": [
     "*"
   ]

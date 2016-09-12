@@ -1,0 +1,27 @@
+<App Background="#222">
+	<DockPanel>
+		<StatusBarBackground Dock="Top" />
+		<BottomBarBackground Dock="Bottom" />
+
+		<NativeViewHost>
+			<Native.DatePicker ux:Name="datePicker">
+				<JavaScript>
+					var date = { year: 2018, month: 1, day: 13 };
+					var minDate = { year: 2016, month: 1, day: 1 };
+					var maxDate = { year: 2020, month: 1, day: 31 };
+
+					datePicker.setMaxDate(maxDate);
+					datePicker.setMinDate(minDate);
+					datePicker.setDate(date);
+
+					datePicker.CurrentDate.addSubscriber(function () {
+						var date = datePicker.CurrentDate.value;
+						console.log("Date changed to: " + date.year + "-" + date.month + "-" + date.day);
+					});
+
+				</JavaScript>
+			</Native.DatePicker>
+		</NativeViewHost>
+
+	</DockPanel>
+</App>
