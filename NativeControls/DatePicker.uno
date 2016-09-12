@@ -16,10 +16,9 @@ namespace Native
 
 	internal interface IDatePickerView
 	{
-		LocalDate CurrentDate { get; }
-		void SetDate(LocalDate date);
-		void SetMinDate(LocalDate date);
-		void SetMaxDate(LocalDate date);
+		LocalDate CurrentDate { get; set; }
+		LocalDate MinDate { set; }
+		LocalDate MaxDate { set; }
 	}
 
 	public partial class DatePicker : Panel, IDatePickerHost

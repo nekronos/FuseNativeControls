@@ -41,23 +41,19 @@ namespace Native.Android
 				var day = date[2];
 				return new LocalDate(year, month, day);
 			}
+			set { SetDate(Handle, value.Year, value.Month - 1, value.Day); }
+		}
+
+		public LocalDate MinDate
+		{
+			set { SetMinDate(Handle, GetMS(value.Year, value.Month - 1, value.Day)); }
+		}
+
+		public LocalDate MaxDate
+		{
+			set { SetMaxDate(Handle, GetMS(value.Year, value.Month - 1, value.Day)); }
 		}
 		
-		void IDatePickerView.SetDate(LocalDate date)
-		{
-			SetDate(Handle, date.Year, date.Month - 1, date.Day);
-		}
-
-		void IDatePickerView.SetMinDate(LocalDate date)
-		{
-			SetMinDate(Handle, GetMS(date.Year, date.Month - 1, date.Day));
-		}
-
-		void IDatePickerView.SetMaxDate(LocalDate date)
-		{
-			SetMaxDate(Handle, GetMS(date.Year, date.Month - 1, date.Day));
-		}
-
 		void OnDateChanged()
 		{
 			_host.OnDateChanged(CurrentDate);

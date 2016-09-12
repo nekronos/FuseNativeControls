@@ -14,6 +14,7 @@ namespace Native
 
 	public partial class DatePicker
 	{
+
 		static DatePicker()
 		{
 			ScriptClass.Register(typeof(DatePicker),
@@ -27,9 +28,7 @@ namespace Native
 			var localDate = ArgsToLocalDate(args);
 			var dp = datePicker.DatePickerView;
 			if (dp != null)
-			{
-				dp.SetDate(localDate);
-			}
+				dp.CurrentDate = localDate;
 		}
 
 		static void setMinDate(Context context, DatePicker datePicker, object[] args)
@@ -37,9 +36,7 @@ namespace Native
 			var localDate = ArgsToLocalDate(args);
 			var dp = datePicker.DatePickerView;
 			if (dp != null)
-			{
-				dp.SetMinDate(localDate);
-			}
+				dp.MinDate = localDate;
 		}
 
 		static void setMaxDate(Context context, DatePicker datePicker, object[] args)
@@ -47,9 +44,7 @@ namespace Native
 			var localDate = ArgsToLocalDate(args);
 			var dp = datePicker.DatePickerView;
 			if (dp != null)
-			{
-				dp.SetMaxDate(localDate);
-			}
+				dp.MaxDate = localDate;
 		}
 
 		static LocalDate ArgsToLocalDate(object[] args)

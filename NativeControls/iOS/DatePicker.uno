@@ -50,21 +50,17 @@ namespace Native.iOS
 				GetDate(Handle, out year, out month, out day);
 				return new LocalDate(year, month, day);
 			}
+			set { SetDate(Handle, MakeNSDate(value.Year, value.Month, value.Day)); }
+		}
+
+		LocalDate IDatePickerView.MinDate
+		{
+			set { SetMinDate(Handle, MakeNSDate(value.Year, value.Month, value.Day)); }
 		}
 		
-		void IDatePickerView.SetDate(LocalDate date)
+		LocalDate IDatePickerView.MaxDate
 		{
-			SetDate(Handle, MakeNSDate(date.Year, date.Month, date.Day));
-		}
-
-		void IDatePickerView.SetMinDate(LocalDate date)
-		{
-			SetMinDate(Handle, MakeNSDate(date.Year, date.Month, date.Day));
-		}
-
-		void IDatePickerView.SetMaxDate(LocalDate date)
-		{
-			SetMaxDate(Handle, MakeNSDate(date.Year, date.Month, date.Day));
+			set { SetMaxDate(Handle, MakeNSDate(value.Year, value.Month, value.Day)); }
 		}
 
 		[Foreign(Language.ObjC)]
