@@ -50,12 +50,12 @@ namespace Native.Android
 
 		void IDatePickerView.SetMinDate(LocalDate date)
 		{
-			SetMinDate(Handle, date.Year, date.Month - 1, date.Day);
+			SetMinDate(Handle, GetMS(date.Year, date.Month - 1, date.Day));
 		}
 
 		void IDatePickerView.SetMaxDate(LocalDate date)
 		{
-			SetMaxDate(Handle, date.Year, date.Month - 1, date.Day);
+			SetMaxDate(Handle, GetMS(date.Year, date.Month - 1, date.Day));
 		}
 
 		void OnDateChanged()
@@ -96,17 +96,17 @@ namespace Native.Android
 		@}
 
 		[Foreign(Language.Java)]
-		void SetMinDate(Java.Object datePickerHandle, int year, int month, int day)
+		void SetMinDate(Java.Object datePickerHandle, long ms)
 		@{
 			android.widget.DatePicker datePicker = (android.widget.DatePicker)datePickerHandle;
-			datePicker.setMinDate(new java.util.Date(year, month, day).getTime());
+			datePicker.setMinDate(ms);
 		@}
 
 		[Foreign(Language.Java)]
-		void SetMaxDate(Java.Object datePickerHandle, int year, int month, int day)
+		void SetMaxDate(Java.Object datePickerHandle, long ms)
 		@{
 			android.widget.DatePicker datePicker = (android.widget.DatePicker)datePickerHandle;
-			datePicker.setMaxDate(new java.util.Date(year, month, day).getTime());
+			datePicker.setMaxDate(ms);
 		@}
 
 		[Foreign(Language.Java)]
@@ -116,6 +116,14 @@ namespace Native.Android
 			x.set(0, datePicker.getYear());
 			x.set(1, datePicker.getMonth());
 			x.set(2, datePicker.getDayOfMonth());
+		@}
+
+		[Foreign(Language.Java)]
+		static long GetMS(int year, int month, int day)
+		@{
+			java.util.Calendar c = java.util.Calendar.getInstance();
+			c.set(year, month, day);
+			return c.getTime().getTime();
 		@}
 
 	}
