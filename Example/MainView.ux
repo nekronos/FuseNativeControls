@@ -3,25 +3,43 @@
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
 
-		<NativeViewHost>
-			<Native.DatePicker ux:Name="datePicker">
-				<JavaScript>
-					var date = { year: 2018, month: 1, day: 13 };
-					var minDate = { year: 2016, month: 1, day: 1 };
-					var maxDate = { year: 2020, month: 1, day: 31 };
+		<StackPanel>
+			<NativeViewHost>
+				<Native.DatePicker ux:Name="datePicker">
+					<JavaScript>
+						var date = { year: 2018, month: 1, day: 13 };
+						var minDate = { year: 2016, month: 1, day: 1 };
+						var maxDate = { year: 2020, month: 1, day: 31 };
 
-					datePicker.setMaxDate(maxDate);
-					datePicker.setMinDate(minDate);
-					datePicker.setDate(date);
+						datePicker.setMaxDate(maxDate);
+						datePicker.setMinDate(minDate);
+						datePicker.setDate(date);
 
-					datePicker.CurrentDate.addSubscriber(function () {
-						var date = datePicker.CurrentDate.value;
-						console.log("Date changed to: " + date.year + "-" + date.month + "-" + date.day);
-					});
+						datePicker.CurrentDate.addSubscriber(function () {
+							var date = datePicker.CurrentDate.value;
+							console.log("Date changed: " + date.year + "-" + date.month + "-" + date.day);
+						});
 
-				</JavaScript>
-			</Native.DatePicker>
-		</NativeViewHost>
+					</JavaScript>
+				</Native.DatePicker>
+			</NativeViewHost>
+			<NativeViewHost>
+				<Native.TimePicker ux:Name="timePicker">
+					<JavaScript>
+						var time = { hour: 13, minute: 37 };
+
+						timePicker.setTime(time);
+
+						timePicker.CurrentTime.addSubscriber(function () {
+							var time = timePicker.CurrentTime.value;
+							console.log("Time changed: " + time.hour + ":" + time.minute);
+						});
+
+					</JavaScript>
+
+				</Native.TimePicker>
+			</NativeViewHost>
+		</StackPanel>
 
 	</DockPanel>
 </App>
