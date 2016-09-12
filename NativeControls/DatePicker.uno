@@ -52,7 +52,7 @@ namespace Native
 			{
 				if (_datePickerView == null)
 					_datePickerView = new DatePickerView(OnDateChanged);
-					
+
 				return _datePickerView;
 			}
 		}
@@ -72,7 +72,7 @@ namespace Native
 		{
 			if defined(Android || iOS)
 			{
-				return (IView)DatePickerView;
+				return DatePickerView;
 			}
 			else
 			{
