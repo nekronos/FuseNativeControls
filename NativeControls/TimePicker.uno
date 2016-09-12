@@ -47,11 +47,14 @@ namespace Native
 		{
 			get
 			{
-				if (_timePickerView == null)
+				if defined(Android || iOS)
 				{
-					_timePickerView = new TimePickerView(OnTimeChanged);
-					_out = CurrentTime;
-					_in = CurrentTime;
+					if (_timePickerView == null)
+					{
+						_timePickerView = new TimePickerView(OnTimeChanged);
+						_out = CurrentTime;
+						_in = CurrentTime;
+					}
 				}
 
 				return _timePickerView;
