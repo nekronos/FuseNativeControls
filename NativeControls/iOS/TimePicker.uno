@@ -13,18 +13,29 @@ namespace Native.iOS
 	{
 		public LocalTime CurrentTime
 		{
-			get
-			{
-				return new LocalTime(0,0);
-			}
-			set {  }
+			get { return DateExtensions.GetLocalTime(Handle); }
+			set { DateExtensions.SetTime(Handle, value); }
 		}
 
-		Action<LocalTime> _onTimeChangedHandler;
+		Action _onTimeChangedHandler;
+		IDisposable _valueChangedEvent;
 
-		public TimePickerView(Action<LocalTime> onTimeChangedHandler) : base(Create())
+		public TimePickerView(Action onTimeChangedHandler) : base(Create())
 		{
 			_onTimeChangedHandler = onTimeChangedHandler;
+			_valueChangedEvent = UIControlEvent.AddValueChangedCallback(Handle, OnTimeChanged);
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			_valueChangedEvent.Dispose();
+			_onTimeChangedHandler = null;
+		}
+
+		void OnTimeChanged(ObjC.Object sender, ObjC.Object args)
+		{
+			_onTimeChangedHandler();
 		}
 
 		[Foreign(Language.ObjC)]

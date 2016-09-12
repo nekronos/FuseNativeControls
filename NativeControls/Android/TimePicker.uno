@@ -21,17 +21,17 @@ namespace Native.Android
 			set { SetTime(Handle, value.Hour, value.Minute); }
 		}
 
-		Action<LocalTime> _onTimeChangedHandler;
+		Action _onTimeChangedHandler;
 
-		public TimePickerView(Action<LocalTime> onTimeChangedHandler) : base(Create())
+		public TimePickerView(Action onTimeChangedHandler) : base(Create())
 		{
 			_onTimeChangedHandler = onTimeChangedHandler;
 			Init(Handle, OnTimeChanged);
 		}
 
-		void OnTimeChanged(int hour, int minute)
+		void OnTimeChanged()
 		{
-			_onTimeChangedHandler(new LocalTime(hour, minute));
+			_onTimeChangedHandler();
 		}
 
 		[Foreign(Language.Java)]
@@ -39,7 +39,7 @@ namespace Native.Android
 		@{
 			((android.widget.TimePicker)handle).setOnTimeChangedListener(new android.widget.TimePicker.OnTimeChangedListener() {
 				public void onTimeChanged(android.widget.TimePicker view, int hourOfDay, int minute) {
-					timeChangedCallback.run(hourOfDay, minute);
+					timeChangedCallback.run();
 				}
 			});
 		@}

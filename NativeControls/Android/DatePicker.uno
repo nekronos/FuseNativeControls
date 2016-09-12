@@ -118,6 +118,5 @@ namespace Native.Android
 			c.set(year, month, day);
 			return c.getTime().getTime();
 		@}
-
 	}
 }

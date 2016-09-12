@@ -1,4 +1,4 @@
-<App Background="#222">
+<App Background="#eee">
 	<DockPanel>
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
@@ -11,13 +11,13 @@
 						var minDate = { year: 2016, month: 1, day: 1 };
 						var maxDate = { year: 2020, month: 1, day: 31 };
 
+						datePicker.setDate(date);
 						datePicker.setMaxDate(maxDate);
 						datePicker.setMinDate(minDate);
-						datePicker.setDate(date);
-
+						
 						datePicker.CurrentDate.addSubscriber(function () {
-							var date = datePicker.CurrentDate.value;
-							console.log("Date changed: " + date.year + "-" + date.month + "-" + date.day);
+							var d = datePicker.CurrentDate.value;
+							console.log("Date changed: " + d["year"] + "-" + d["month"] + "-" + d["day"]);
 						});
 
 					</JavaScript>
@@ -27,14 +27,13 @@
 				<Native.TimePicker ux:Name="timePicker">
 					<JavaScript>
 						var time = { hour: 13, minute: 37 };
-
 						timePicker.setTime(time);
 
 						timePicker.CurrentTime.addSubscriber(function () {
-							var time = timePicker.CurrentTime.value;
-							console.log("Time changed: " + time.hour + ":" + time.minute);
+							var t = timePicker.CurrentTime.value;
+							console.log("Time changed: " + t["hour"] + ":" + t["minute"]);
 						});
-
+						
 					</JavaScript>
 
 				</Native.TimePicker>

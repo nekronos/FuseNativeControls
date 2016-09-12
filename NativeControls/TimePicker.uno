@@ -47,7 +47,7 @@ namespace Native
 			}
 		}
 
-		void OnTimeChanged(LocalTime time)
+		void OnTimeChanged()
 		{
 			OnPropertyChanged(_currentTimeName, null);
 		}
