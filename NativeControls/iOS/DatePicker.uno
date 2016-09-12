@@ -111,7 +111,7 @@ namespace Native.iOS
 		@{
 			UIDatePicker* dp = (UIDatePicker*)handle;
 			NSDate* date = (NSDate*)nsDateHandle;
-			[dp setMaximumDate:date];
+			[dp setMinimumDate:date];
 		@}
 
 		[Foreign(Language.ObjC)]
@@ -119,7 +119,7 @@ namespace Native.iOS
 		@{
 			UIDatePicker* dp = (UIDatePicker*)handle;
 			NSDate* date = (NSDate*)nsDateHandle;
-			[dp setMinimumDate:date];
+			[dp setMaximumDate:date];
 		@}
 
 	}

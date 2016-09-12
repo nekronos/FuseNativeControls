@@ -6,6 +6,8 @@
     "Uno.Data.Json",
   ],
   "Includes": [
-    "*"
+    "*",
+    "iOS/UIControlEvent.h:ObjCHeader:iOS",
+    "iOS/UIControlEvent.mm:ObjCSource:iOS",
   ]
 }

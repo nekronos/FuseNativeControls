@@ -4,7 +4,7 @@ using Uno.Compiler.ExportTargetInterop;
 namespace Native.iOS
 {
 	[Require("Source.Include", "UIKit/UIKit.h")]
-	[Require("Source.Include", "UIControlEvent.h")]
+	[Require("Source.Include", "iOS/UIControlEvent.h")]
 	extern(iOS) class UIControlEvent : IDisposable
 	{
 		public static IDisposable AddValueChangedCallback(ObjC.Object uiControl, Action<ObjC.Object, ObjC.Object> handler)
