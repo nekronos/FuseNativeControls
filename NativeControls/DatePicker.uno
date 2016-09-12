@@ -1,4 +1,5 @@
 using Uno;
+using Uno.UX;
 using Uno.Time;
 using Uno.Compiler.ExportTargetInterop;
 
@@ -20,18 +21,42 @@ namespace Native
 		LocalDate MinDate { set; }
 		LocalDate MaxDate { set; }
 	}
+	
+	internal class DummyDatePickerView : IDatePickerView
+	{
+		static DummyDatePickerView _instance;
+		public static IDatePickerView Instance
+		{
+			get { return _instance ?? (_instance = new DummyDatePickerView()); }
+		}
+
+		LocalDate IDatePickerView.CurrentDate
+		{
+			get { return ZonedDateTime.Now.Date; }
+			set { }
+		}
+		LocalDate IDatePickerView.MinDate { set { } }
+		LocalDate IDatePickerView.MaxDate { set { } }
+	}
 
 	public partial class DatePicker : Panel, IDatePickerHost
 	{
+		static Selector _currentDateName = "CurrentDate";
+
+		LocalDate CurrentDate
+		{
+			get { return DatePickerView.CurrentDate; }
+			set { DatePickerView.CurrentDate = value; }
+		}
 
 		IDatePickerView DatePickerView
 		{
-			get { return NativeView as IDatePickerView; }
+			get { return (NativeView as IDatePickerView) ?? DummyDatePickerView.Instance; }
 		}
 
 		void IDatePickerHost.OnDateChanged(LocalDate date)
 		{
-			// TODO: implement JS event
+			OnPropertyChanged(_currentDateName, null);
 		}
 
 		protected override IView CreateNativeView()
