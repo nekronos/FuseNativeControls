@@ -24,6 +24,7 @@ namespace Native
 
 	public partial class DatePicker : Panel, IDatePickerHost
 	{
+
 		IDatePickerView DatePickerView
 		{
 			get { return NativeView as IDatePickerView; }

@@ -1,7 +1,9 @@
 {
   "Packages": [
     "Fuse",
-    "FuseJS"
+    "FuseJS",
+    "Fuse.Scripting",
+    "Uno.Data.Json",
   ],
   "Includes": [
     "*"
