@@ -27,34 +27,40 @@ namespace Native.Android
 			_host = null;
 		}
 
-		LocalDate IDatePickerView.CurrentDate
+		// Month starts at 0 in Java
+		// https://developer.android.com/reference/java/util/Calendar.html#MONTH
+
+		public LocalDate CurrentDate
 		{
 			get
 			{
 				var date = new int[3];
 				GetDate(Handle, date);
-				return new LocalDate(date[0], date[1], date[2]);
+				var year = date[0];
+				var month = date[1] + 1;
+				var day = date[2];
+				return new LocalDate(year, month, day);
 			}
 		}
 		
 		void IDatePickerView.SetDate(LocalDate date)
 		{
-			SetDate(Handle, date.Year, date.Month, date.Day);
+			SetDate(Handle, date.Year, date.Month - 1, date.Day);
 		}
 
 		void IDatePickerView.SetMinDate(LocalDate date)
 		{
-			SetMinDate(Handle, date.Year, date.Month, date.Day);
+			SetMinDate(Handle, date.Year, date.Month - 1, date.Day);
 		}
 
 		void IDatePickerView.SetMaxDate(LocalDate date)
 		{
-			SetMaxDate(Handle, date.Year, date.Month, date.Day);
+			SetMaxDate(Handle, date.Year, date.Month - 1, date.Day);
 		}
 
-		void OnDateChanged(int year, int month, int day)
+		void OnDateChanged()
 		{
-			_host.OnDateChanged(new LocalDate(year, month, day));
+			_host.OnDateChanged(CurrentDate);
 		}
 
 		[Foreign(Language.Java)]
@@ -64,7 +70,7 @@ namespace Native.Android
 		@}
 
 		[Foreign(Language.Java)]
-		void Init(Java.Object datePickerHandle, Action<int,int,int> onDateChangedCallback)
+		void Init(Java.Object datePickerHandle, Action onDateChangedCallback)
 		@{
 			android.widget.DatePicker datePicker = (android.widget.DatePicker)datePickerHandle;
 			java.util.Calendar c = java.util.Calendar.getInstance();
@@ -76,7 +82,7 @@ namespace Native.Android
 			datePicker.init(y, m, d, new android.widget.DatePicker.OnDateChangedListener() {
 
 				public void onDateChanged(android.widget.DatePicker view, int year, int month, int day) {
-					onDateChangedCallback.run(year, month, day);
+					onDateChangedCallback.run();
 				}
 
 			});
