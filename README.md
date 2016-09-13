@@ -1,5 +1,7 @@
 # FuseNativeControls
 
+[![Build Status](https://travis-ci.org/nekronos/FuseNativeControls.svg?branch=master)](https://travis-ci.org/nekronos/FuseNativeControls)
+
 This library provides cross-platform abstractions of native Android and iOS controls for [fuse](http://www.fusetools.com).
 
 Implemented so far:
