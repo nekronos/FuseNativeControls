@@ -10,9 +10,9 @@ namespace Native.Android
 {
 	extern(Android) class DatePickerView : Fuse.Controls.Native.Android.LeafView
 	{
-		Action<LocalDate> _onDateChangedHandler;
+		Action _onDateChangedHandler;
 
-		public DatePickerView(Action<LocalDate> onDateChangedHandler) : base(Create())
+		public DatePickerView(Action onDateChangedHandler) : base(Create())
 		{
 			_onDateChangedHandler = onDateChangedHandler;
 			Init(Handle, OnDateChanged);
@@ -53,7 +53,7 @@ namespace Native.Android
 		
 		void OnDateChanged()
 		{
-			_onDateChangedHandler(CurrentDate);
+			_onDateChangedHandler();
 		}
 
 		[Foreign(Language.Java)]

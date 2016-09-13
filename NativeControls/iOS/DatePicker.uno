@@ -12,10 +12,10 @@ namespace Native.iOS
 	extern(iOS) class DatePickerView : Fuse.Controls.Native.iOS.LeafView
 	{
 
-		Action<LocalDate> _onDateChangedHandler;
+		Action _onDateChangedHandler;
 		IDisposable _valueChangedEvent;
 
-		public DatePickerView(Action<LocalDate> onDateChangedHandler) : base(Create())
+		public DatePickerView(Action onDateChangedHandler) : base(Create())
 		{
 			_onDateChangedHandler = onDateChangedHandler;
 			_valueChangedEvent = UIControlEvent.AddValueChangedCallback(Handle, OnDateChanged);
@@ -31,7 +31,7 @@ namespace Native.iOS
 
 		void OnDateChanged(ObjC.Object sender, ObjC.Object args)
 		{
-			_onDateChangedHandler(CurrentDate);
+			_onDateChangedHandler();
 		}
 
 		public LocalDate CurrentDate

@@ -32,7 +32,14 @@ namespace Native
 		public LocalTime CurrentTime
 		{
 			get { return TimePickerView.CurrentTime; }
-			set { TimePickerView.CurrentTime = value; }
+			set
+			{
+				if (TimePickerView.CurrentTime != value)
+				{
+					TimePickerView.CurrentTime = value;
+					OnTimeChanged();
+				}
+			}
 		}
 
 		TimePickerView _timePickerView;
@@ -41,15 +48,30 @@ namespace Native
 			get
 			{
 				if (_timePickerView == null)
+				{
 					_timePickerView = new TimePickerView(OnTimeChanged);
+					_out = CurrentTime;
+					_in = CurrentTime;
+				}
 
 				return _timePickerView;
 			}
 		}
 
+		LocalTime _out;
+		LocalTime _in;
+
 		void OnTimeChanged()
 		{
+			lock(this)
+				_out = CurrentTime;
 			OnPropertyChanged(_currentTimeName, null);
+		}
+
+		void UpdateCurrentTime()
+		{
+			lock(this)
+				CurrentTime = _in;
 		}
 
 		protected override void OnUnrooted()

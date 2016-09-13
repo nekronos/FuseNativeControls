@@ -14,14 +14,25 @@ namespace Native
 
 	public partial class DatePicker
 	{
-
 		class CurrentDateProperty : Property<string>
 		{
 			readonly DatePicker _dp;
 			public override PropertyObject Object { get { return _dp; } }
 			public override bool SupportsOriginSetter { get { return false; } }
-			public override string Get() { return _dp.CurrentDate.ToJSON(); }
-			public override void Set(string value, IPropertyListener origin) { _dp.CurrentDate = JsonReader.Parse(value).FromJSON(); }
+			public override string Get()
+			{
+				LocalDate date = ZonedDateTime.Now.Date;
+				lock(_dp)
+					date = _dp._out;
+				return date.ToJSON();
+			}
+			public override void Set(string value, IPropertyListener origin)
+			{
+				var date = JsonReader.Parse(value).FromJSON();
+				lock(_dp)
+					_dp._in = date;
+				UpdateManager.PostAction(_dp.UpdateCurrentDate);
+			}
 			public CurrentDateProperty(DatePicker datePicker) : base(DatePicker._currentDateName) { _dp = datePicker; }
 		}
 

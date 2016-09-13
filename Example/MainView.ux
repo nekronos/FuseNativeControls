@@ -5,7 +5,9 @@
 
 		<StackPanel>
 			<NativeViewHost>
-				<Native.DatePicker ux:Name="datePicker">
+
+				<StackPanel>
+					<Native.DatePicker ux:Name="datePicker" />
 					<JavaScript>
 						var date = { year: 2018, month: 1, day: 13 };
 						var minDate = { year: 2016, month: 1, day: 1 };
@@ -20,8 +22,18 @@
 							console.log("Date changed: " + d["year"] + "-" + d["month"] + "-" + d["day"]);
 						});
 
+						module.exports = {
+							reset: function () {
+								datePicker.setDate(date);
+							}
+						};
+
 					</JavaScript>
-				</Native.DatePicker>
+					<Button Text="Reset date" Clicked="{reset}" />
+				</StackPanel>
+
+				
+
 			</NativeViewHost>
 			<NativeViewHost>
 				<Native.TimePicker ux:Name="timePicker">
@@ -33,7 +45,7 @@
 							var t = timePicker.CurrentTime.value;
 							console.log("Time changed: " + t["hour"] + ":" + t["minute"]);
 						});
-						
+
 					</JavaScript>
 
 				</Native.TimePicker>

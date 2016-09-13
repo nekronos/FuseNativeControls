@@ -32,7 +32,14 @@ namespace Native
 		public LocalDate CurrentDate
 		{
 			get { return DatePickerView.CurrentDate; }
-			set { DatePickerView.CurrentDate = value; }
+			set
+			{
+				if (DatePickerView.CurrentDate != value)
+				{
+					DatePickerView.CurrentDate = value;
+					OnDateChanged();
+				}
+			}
 		}
 
 		public LocalDate MinDate
@@ -51,15 +58,29 @@ namespace Native
 			get
 			{
 				if (_datePickerView == null)
+				{
 					_datePickerView = new DatePickerView(OnDateChanged);
-
+					_out = CurrentDate;
+					_in	= CurrentDate;
+				}
 				return _datePickerView;
 			}
 		}
 
-		internal void OnDateChanged(LocalDate date)
+		LocalDate _out;
+		LocalDate _in;
+
+		internal void OnDateChanged()
 		{
+			lock(this)
+				_out = CurrentDate;
 			OnPropertyChanged(_currentDateName, null);
+		}
+
+		void UpdateCurrentDate()
+		{
+			lock(this)
+				CurrentDate = _in;
 		}
 
 		protected override void OnUnrooted()

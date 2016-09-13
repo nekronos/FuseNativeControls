@@ -19,8 +19,20 @@ namespace Native
 			readonly TimePicker _tp;
 			public override PropertyObject Object { get { return _tp; } }
 			public override bool SupportsOriginSetter { get { return false; } }
-			public override string Get() { return ToJSON(_tp.CurrentTime); }
-			public override void Set(string value, IPropertyListener origin) { _tp.CurrentTime = FromJSON(JsonReader.Parse(value)); }
+			public override string Get()
+			{
+				LocalTime time = ZonedDateTime.Now.TimeOfDay;
+				lock (_tp)
+					time = _tp._out;
+				return ToJSON(time);
+			}
+			public override void Set(string value, IPropertyListener origin)
+			{
+				var newTime = FromJSON(JsonReader.Parse(value));
+				lock (_tp)
+					_tp._in = newTime;
+				UpdateManager.PostAction(_tp.UpdateCurrentTime);
+			}
 			public CurrentTimeProperty(TimePicker timePicker) : base(TimePicker._currentTimeName) { _tp = timePicker; }
 		}
 
