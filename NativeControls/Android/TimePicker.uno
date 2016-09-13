@@ -35,7 +35,7 @@ namespace Native.Android
 		}
 
 		[Foreign(Language.Java)]
-		static void Init(Java.Object handle, Action<int, int> timeChangedCallback)
+		static void Init(Java.Object handle, Action timeChangedCallback)
 		@{
 			((android.widget.TimePicker)handle).setOnTimeChangedListener(new android.widget.TimePicker.OnTimeChangedListener() {
 				public void onTimeChanged(android.widget.TimePicker view, int hourOfDay, int minute) {
