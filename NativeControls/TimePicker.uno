@@ -21,7 +21,7 @@ namespace Native
 			set { }
 		}
 
-		public TimePickerView(Action<LocalTime> handler) { }
+		public TimePickerView(Action handler) { }
 	}
 
 	public partial class TimePicker : Panel

@@ -22,7 +22,7 @@ namespace Native
 		}
 		public LocalDate MinDate { set { } }
 		public LocalDate MaxDate { set { } }
-		public DatePickerView(Action<LocalDate> handler) { }
+		public DatePickerView(Action handler) { }
 	}
 
 	public partial class DatePicker : Panel
