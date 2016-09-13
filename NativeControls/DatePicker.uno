@@ -67,8 +67,8 @@ namespace Native
 			}
 		}
 
-		LocalDate _out;
-		LocalDate _in;
+		LocalDate _out = ZonedDateTime.Now.Date;
+		LocalDate _in = ZonedDateTime.Now.Date;
 
 		internal void OnDateChanged()
 		{

@@ -58,8 +58,8 @@ namespace Native
 			}
 		}
 
-		LocalTime _out;
-		LocalTime _in;
+		LocalTime _out = ZonedDateTime.Now.TimeOfDay;
+		LocalTime _in = ZonedDateTime.Now.TimeOfDay;
 
 		void OnTimeChanged()
 		{
