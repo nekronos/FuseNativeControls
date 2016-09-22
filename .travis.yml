@@ -6,7 +6,7 @@ env:
     - XCODE_XCCONFIG_FILE=$TRAVIS_BUILD_DIR/.travis.xcconfig
 
 install:
-  - wget https://www.fusetools.com/downloads/0.25.1.7615/osx -O fuse-installer.pkg
+  - wget https://www.fusetools.com/downloads/latest/beta/osx -O fuse-installer.pkg
   - sudo installer -pkg fuse-installer.pkg -target /
 
 script:
