@@ -11,12 +11,12 @@ using Fuse.Scripting;
 
 namespace Native
 {
-	public partial class TimePicker
+	public partial class TimePickerBase
 	{
 
 		class CurrentTimeProperty : Property<string>
 		{
-			readonly TimePicker _tp;
+			readonly TimePickerBase _tp;
 			public override PropertyObject Object { get { return _tp; } }
 			public override bool SupportsOriginSetter { get { return false; } }
 			public override string Get()
@@ -33,18 +33,18 @@ namespace Native
 					_tp._in = newTime;
 				UpdateManager.PostAction(_tp.UpdateCurrentTime);
 			}
-			public CurrentTimeProperty(TimePicker timePicker) : base(TimePicker._currentTimeName) { _tp = timePicker; }
+			public CurrentTimeProperty(TimePickerBase timePicker) : base(TimePickerBase._currentTimeName) { _tp = timePicker; }
 		}
 
-		static TimePicker()
+		static TimePickerBase()
 		{
-			ScriptClass.Register(typeof(TimePicker),
-				new ScriptProperty<TimePicker, string>("CurrentTime", getCurrentTimeProperty, ".notNull().parseJson()"),
-				new ScriptMethod<TimePicker>("setTime", setTime, ExecutionThread.MainThread));
+			ScriptClass.Register(typeof(TimePickerBase),
+				new ScriptProperty<TimePickerBase, string>("CurrentTime", getCurrentTimeProperty, ".notNull().parseJson()"),
+				new ScriptMethod<TimePickerBase>("setTime", setTime, ExecutionThread.MainThread));
 		}
 		
 		CurrentTimeProperty _currentTimeProperty;
-		static Property<string> getCurrentTimeProperty(TimePicker timePicker)
+		static Property<string> getCurrentTimeProperty(TimePickerBase timePicker)
 		{
 			if (timePicker._currentTimeProperty == null)
 				timePicker._currentTimeProperty = new CurrentTimeProperty(timePicker);
@@ -52,7 +52,7 @@ namespace Native
 			return timePicker._currentTimeProperty;
 		}
 
-		static void setTime(Context context, TimePicker timePicker, object[] args)
+		static void setTime(Context context, TimePickerBase timePicker, object[] args)
 		{
 			if (args.Length < 1)
 				throw new Fuse.Scripting.Error("To few arguments");

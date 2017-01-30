@@ -1,4 +1,5 @@
 using Uno;
+using Uno.UX;
 using Uno.Time;
 using Uno.Compiler.ExportTargetInterop;
 
@@ -8,8 +9,14 @@ using Fuse.Controls.Native;
 
 namespace Native.iOS
 {
+	extern(!iOS) class TimePickerView
+	{
+		[UXConstructor]
+		public TimePickerView([UXParameter("Host")]ITimePickerHost host) { }
+	}
+
 	[Require("Source.Include", "UIKit/UIKit.h")]
-	extern(iOS) class TimePickerView : Fuse.Controls.Native.iOS.LeafView
+	extern(iOS) class TimePickerView : Fuse.Controls.Native.iOS.LeafView, ITimePickerView
 	{
 		public LocalTime CurrentTime
 		{
@@ -17,12 +24,13 @@ namespace Native.iOS
 			set { DateExtensions.SetTime(Handle, value); }
 		}
 
-		Action _onTimeChangedHandler;
+		ITimePickerHost _host;
 		IDisposable _valueChangedEvent;
 
-		public TimePickerView(Action onTimeChangedHandler) : base(Create())
+		[UXConstructor]
+		public TimePickerView([UXParameter("Host")]ITimePickerHost host) : base(Create())
 		{
-			_onTimeChangedHandler = onTimeChangedHandler;
+			_host = host;
 			_valueChangedEvent = UIControlEvent.AddValueChangedCallback(Handle, OnTimeChanged);
 		}
 
@@ -30,12 +38,12 @@ namespace Native.iOS
 		{
 			base.Dispose();
 			_valueChangedEvent.Dispose();
-			_onTimeChangedHandler = null;
+			_host = null;
 		}
 
 		void OnTimeChanged(ObjC.Object sender, ObjC.Object args)
 		{
-			_onTimeChangedHandler();
+			_host.OnTimeChanged();
 		}
 
 		[Foreign(Language.ObjC)]

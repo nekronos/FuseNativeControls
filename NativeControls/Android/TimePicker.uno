@@ -1,4 +1,5 @@
 using Uno;
+using Uno.UX;
 using Uno.Time;
 using Uno.Compiler.ExportTargetInterop;
 
@@ -8,7 +9,14 @@ using Fuse.Controls.Native;
 
 namespace Native.Android
 {
-	extern(Android) class TimePickerView : Fuse.Controls.Native.Android.LeafView
+
+	extern(!Android) class TimePickerView
+	{
+		[UXConstructor]
+		public TimePickerView([UXParameter("Host")]ITimePickerHost host) { }
+	}
+
+	extern(Android) class TimePickerView : Fuse.Controls.Native.Android.LeafView, ITimePickerView
 	{
 		public LocalTime CurrentTime
 		{
@@ -21,17 +29,24 @@ namespace Native.Android
 			set { SetTime(Handle, value.Hour, value.Minute); }
 		}
 
-		Action _onTimeChangedHandler;
+		ITimePickerHost _host;
 
-		public TimePickerView(Action onTimeChangedHandler) : base(Create())
+		[UXConstructor]
+		public TimePickerView([UXParameter("Host")]ITimePickerHost host) : base(Create())
 		{
-			_onTimeChangedHandler = onTimeChangedHandler;
+			_host = host;
 			Init(Handle, OnTimeChanged);
 		}
 
 		void OnTimeChanged()
 		{
-			_onTimeChangedHandler();
+			_host.OnTimeChanged();
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			_host = null;
 		}
 
 		[Foreign(Language.Java)]

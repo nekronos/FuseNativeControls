@@ -13,52 +13,53 @@ namespace Native
 	using iOS;
 	using Android;
 
-	extern(!iOS && !Android) class TimePickerView
+	interface ITimePickerView
 	{
-		public LocalTime CurrentTime
-		{
-			get { return ZonedDateTime.Now.TimeOfDay; }
-			set { }
-		}
-
-		public TimePickerView(Action handler) { }
+		LocalTime CurrentTime { get; set; }
 	}
 
-	public partial class TimePicker : Panel
+	interface ITimePickerHost
+	{
+		void OnTimeChanged();
+	}
+
+	public abstract partial class TimePickerBase : Panel, ITimePickerHost
 	{
 
 		static Selector _currentTimeName = "CurrentTime";
 
 		public LocalTime CurrentTime
 		{
-			get { return TimePickerView.CurrentTime; }
+			get
+			{
+				var tpv = TimePickerView;
+				return tpv != null
+					? tpv.CurrentTime
+					: ZonedDateTime.Now.TimeOfDay;
+			}
 			set
 			{
-				if (TimePickerView.CurrentTime != value)
+				var tpv = TimePickerView;
+				if (tpv != null && tpv.CurrentTime != value)
 				{
-					TimePickerView.CurrentTime = value;
+					tpv.CurrentTime = value;
 					OnTimeChanged();
 				}
 			}
 		}
 
-		TimePickerView _timePickerView;
-		TimePickerView TimePickerView
+		ITimePickerView TimePickerView
 		{
-			get
-			{
-				if (_timePickerView == null)
-				{
-					_timePickerView = new TimePickerView(OnTimeChanged);
-					_out = CurrentTime;
-					_in = CurrentTime;
-				}
-				return _timePickerView;
-			}
+			get { return NativeView as ITimePickerView; }
 		}
 
 		LocalTime _out = ZonedDateTime.Now.TimeOfDay;
 		LocalTime _in = ZonedDateTime.Now.TimeOfDay;
+
+		void ITimePickerHost.OnTimeChanged()
+		{
+			OnTimeChanged();
+		}
 
 		void OnTimeChanged()
 		{
@@ -73,23 +74,11 @@ namespace Native
 				CurrentTime = _in;
 		}
 
-		protected override void OnUnrooted()
+		protected override void OnRooted()
 		{
-			base.OnUnrooted();
-			_timePickerView = null;
-		}
-
-		protected override IView CreateNativeView()
-		{
-			if defined(Android || iOS)
-			{
-				return TimePickerView;	
-			}
-			else
-			{
-				return base.CreateNativeView();
-			}
+			base.OnRooted();
+			_out = CurrentTime;
+			_in = CurrentTime;
 		}
 	}
-
 }
