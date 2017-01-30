@@ -1,4 +1,5 @@
 using Uno;
+using Uno.UX;
 using Uno.Time;
 using Uno.Compiler.ExportTargetInterop;
 
@@ -8,20 +9,27 @@ using Fuse.Controls.Native;
 
 namespace Native.Android
 {
-	extern(Android) class DatePickerView : Fuse.Controls.Native.Android.LeafView
+	extern(!Android) class DatePickerView
 	{
-		Action _onDateChangedHandler;
+		[UXConstructor]
+		public DatePickerView([UXParameter("Host")]IDatePickerHost host) { }
+	}
 
-		public DatePickerView(Action onDateChangedHandler) : base(Create())
+	extern(Android) class DatePickerView : Fuse.Controls.Native.Android.LeafView, IDatePickerView
+	{
+		IDatePickerHost _host;
+
+		[UXConstructor]
+		public DatePickerView([UXParameter("Host")]IDatePickerHost host) : base(Create())
 		{
-			_onDateChangedHandler = onDateChangedHandler;
+			_host = host;
 			Init(Handle, OnDateChanged);
 		}
 
 		public override void Dispose()
 		{
 			base.Dispose();
-			_onDateChangedHandler = null;
+			_host = null;
 		}
 
 		// Month starts at 0 in Java
@@ -53,7 +61,7 @@ namespace Native.Android
 		
 		void OnDateChanged()
 		{
-			_onDateChangedHandler();
+			_host.OnDateChanged();
 		}
 
 		[Foreign(Language.Java)]

@@ -1,4 +1,5 @@
 using Uno;
+using Uno.UX;
 using Uno.Time;
 using Uno.Compiler.ExportTargetInterop;
 
@@ -8,16 +9,23 @@ using Fuse.Controls.Native;
 
 namespace Native.iOS
 {
+	extern(!iOS) class DatePickerView
+	{
+		[UXConstructor]
+		public DatePickerView([UXParameter("Host")]IDatePickerHost host) { }
+	}
+
 	[Require("Source.Include", "UIKit/UIKit.h")]
-	extern(iOS) class DatePickerView : Fuse.Controls.Native.iOS.LeafView
+	extern(iOS) class DatePickerView : Fuse.Controls.Native.iOS.LeafView, IDatePickerView
 	{
 
-		Action _onDateChangedHandler;
+		IDatePickerHost _host;
 		IDisposable _valueChangedEvent;
 
-		public DatePickerView(Action onDateChangedHandler) : base(Create())
+		[UXConstructor]
+		public DatePickerView([UXParameter("Host")]IDatePickerHost host) : base(Create())
 		{
-			_onDateChangedHandler = onDateChangedHandler;
+			_host = host;
 			_valueChangedEvent = UIControlEvent.AddValueChangedCallback(Handle, OnDateChanged);
 		}
 
@@ -26,12 +34,12 @@ namespace Native.iOS
 			base.Dispose();
 			_valueChangedEvent.Dispose();
 			_valueChangedEvent = null;
-			_onDateChangedHandler = null;
+			_host = null;
 		}
 
 		void OnDateChanged(ObjC.Object sender, ObjC.Object args)
 		{
-			_onDateChangedHandler();
+			_host.OnDateChanged();
 		}
 
 		public LocalDate CurrentDate

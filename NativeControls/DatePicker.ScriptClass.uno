@@ -12,11 +12,11 @@ using Fuse.Scripting;
 namespace Native
 {
 
-	public partial class DatePicker
+	public partial class DatePickerBase
 	{
 		class CurrentDateProperty : Property<string>
 		{
-			readonly DatePicker _dp;
+			readonly DatePickerBase _dp;
 			public override PropertyObject Object { get { return _dp; } }
 			public override bool SupportsOriginSetter { get { return false; } }
 			public override string Get()
@@ -33,20 +33,20 @@ namespace Native
 					_dp._in = date;
 				UpdateManager.PostAction(_dp.UpdateCurrentDate);
 			}
-			public CurrentDateProperty(DatePicker datePicker) : base(DatePicker._currentDateName) { _dp = datePicker; }
+			public CurrentDateProperty(DatePickerBase datePicker) : base(DatePickerBase._currentDateName) { _dp = datePicker; }
 		}
 
-		static DatePicker()
+		static DatePickerBase()
 		{
-			ScriptClass.Register(typeof(DatePicker),
-				new ScriptProperty<DatePicker, string>("CurrentDate", getCurrentDateProperty, ".notNull().parseJson()"),
-				new ScriptMethod<DatePicker>("setDate", setDate, ExecutionThread.MainThread),
-				new ScriptMethod<DatePicker>("setMinDate", setMinDate, ExecutionThread.MainThread),
-				new ScriptMethod<DatePicker>("setMaxDate", setMaxDate, ExecutionThread.MainThread));
+			ScriptClass.Register(typeof(DatePickerBase),
+				new ScriptProperty<DatePickerBase, string>("CurrentDate", getCurrentDateProperty, ".notNull().parseJson()"),
+				new ScriptMethod<DatePickerBase>("setDate", setDate, ExecutionThread.MainThread),
+				new ScriptMethod<DatePickerBase>("setMinDate", setMinDate, ExecutionThread.MainThread),
+				new ScriptMethod<DatePickerBase>("setMaxDate", setMaxDate, ExecutionThread.MainThread));
 		}
 		
 		CurrentDateProperty _currentDateProperty;
-		static Property<string> getCurrentDateProperty(DatePicker datePicker)
+		static Property<string> getCurrentDateProperty(DatePickerBase datePicker)
 		{
 			if (datePicker._currentDateProperty == null)
 				datePicker._currentDateProperty = new CurrentDateProperty(datePicker);
@@ -54,17 +54,17 @@ namespace Native
 			return datePicker._currentDateProperty;
 		}
 
-		static void setDate(Context context, DatePicker datePicker, object[] args)
+		static void setDate(Context context, DatePickerBase datePicker, object[] args)
 		{
 			datePicker.CurrentDate = ArgsToLocalDate(args);
 		}
 
-		static void setMinDate(Context context, DatePicker datePicker, object[] args)
+		static void setMinDate(Context context, DatePickerBase datePicker, object[] args)
 		{
 			datePicker.MinDate = ArgsToLocalDate(args);
 		}
 
-		static void setMaxDate(Context context, DatePicker datePicker, object[] args)
+		static void setMaxDate(Context context, DatePickerBase datePicker, object[] args)
 		{
 			datePicker.MaxDate = ArgsToLocalDate(args);
 		}

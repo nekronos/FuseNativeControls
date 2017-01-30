@@ -13,30 +13,37 @@ namespace Native
 	using iOS;
 	using Android;
 
-	extern(!iOS && !Android) class DatePickerView
+	interface IDatePickerView
 	{
-		public LocalDate CurrentDate
-		{
-			get { return ZonedDateTime.Now.Date; }
-			set { }
-		}
-		public LocalDate MinDate { set { } }
-		public LocalDate MaxDate { set { } }
-		public DatePickerView(Action handler) { }
+		LocalDate CurrentDate { get; set; }
+		LocalDate MinDate { set; }
+		LocalDate MaxDate { set; }
 	}
 
-	public partial class DatePicker : Panel
+	interface IDatePickerHost
+	{
+		void OnDateChanged();
+	}
+
+	public abstract partial class DatePickerBase : Panel, IDatePickerHost
 	{
 		static Selector _currentDateName = "CurrentDate";
 
 		public LocalDate CurrentDate
 		{
-			get { return DatePickerView.CurrentDate; }
+			get
+			{
+				var dpv = DatePickerView;
+				return dpv != null
+					? dpv.CurrentDate
+					: ZonedDateTime.Now.Date;
+			}
 			set
 			{
-				if (DatePickerView.CurrentDate != value)
+				var dpv = DatePickerView;
+				if (dpv != null && dpv.CurrentDate != value)
 				{
-					DatePickerView.CurrentDate = value;
+					dpv.CurrentDate = value;
 					OnDateChanged();
 				}
 			}
@@ -44,31 +51,36 @@ namespace Native
 
 		public LocalDate MinDate
 		{
-			set { DatePickerView.MinDate = value; }
+			set
+			{
+				var dpv = DatePickerView;
+				if (dpv != null)
+					dpv.MinDate = value;
+			}
 		}
 
 		public LocalDate MaxDate
 		{
-			set { DatePickerView.MaxDate = value; }
-		}	
-
-		DatePickerView _datePickerView;
-		DatePickerView DatePickerView
-		{
-			get
+			set
 			{
-				if (_datePickerView == null)
-				{
-					_datePickerView = new DatePickerView(OnDateChanged);
-					_out = CurrentDate;
-					_in	= CurrentDate;
-				}
-				return _datePickerView;
+				var dpv = DatePickerView;
+				if (dpv != null)
+					dpv.MaxDate = value;
 			}
+		}
+
+		IDatePickerView DatePickerView
+		{
+			get { return NativeView as IDatePickerView; }
 		}
 
 		LocalDate _out = ZonedDateTime.Now.Date;
 		LocalDate _in = ZonedDateTime.Now.Date;
+
+		void IDatePickerHost.OnDateChanged()
+		{
+			OnDateChanged();
+		}
 
 		internal void OnDateChanged()
 		{
@@ -83,22 +95,11 @@ namespace Native
 				CurrentDate = _in;
 		}
 
-		protected override void OnUnrooted()
+		protected override void OnRooted()
 		{
-			base.OnUnrooted();
-			_datePickerView = null;
-		}
-
-		protected override IView CreateNativeView()
-		{
-			if defined(Android || iOS)
-			{
-				return DatePickerView;
-			}
-			else
-			{
-				return base.CreateNativeView();
-			}
+			base.OnRooted();
+			_out = CurrentDate;
+			_in	= CurrentDate;
 		}
 	}
 }
