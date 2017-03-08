@@ -34,7 +34,6 @@ namespace Native.iOS
 
             NSCalendar* calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 			NSDate* date = [calendar dateFromComponents:components];
-			[components release];
 
 			return date;
 		@}
