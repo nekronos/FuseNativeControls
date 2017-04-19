@@ -19,14 +19,14 @@ namespace Native
 			readonly DatePickerBase _dp;
 			public override PropertyObject Object { get { return _dp; } }
 			public override bool SupportsOriginSetter { get { return false; } }
-			public override string Get()
+			public override string Get(PropertyObject obj)
 			{
 				LocalDate date = ZonedDateTime.Now.Date;
 				lock(_dp)
 					date = _dp._out;
 				return date.ToJSON();
 			}
-			public override void Set(string value, IPropertyListener origin)
+			public override void Set(PropertyObject obj, string value, IPropertyListener origin)
 			{
 				var date = JsonReader.Parse(value).FromJSON();
 				lock(_dp)
@@ -44,7 +44,7 @@ namespace Native
 				new ScriptMethod<DatePickerBase>("setMinDate", setMinDate, ExecutionThread.MainThread),
 				new ScriptMethod<DatePickerBase>("setMaxDate", setMaxDate, ExecutionThread.MainThread));
 		}
-		
+
 		CurrentDateProperty _currentDateProperty;
 		static Property<string> getCurrentDateProperty(DatePickerBase datePicker)
 		{
@@ -107,9 +107,9 @@ namespace Native
 
 		public static LocalDate FromJSON(this JsonReader json)
 		{
-			var year = json["year"].AsInteger();
-			var month = json["month"].AsInteger();
-			var day = json["day"].AsInteger();
+			var year = (int)json["year"].AsNumber();
+			var month = (int)json["month"].AsNumber();
+			var day = (int)json["day"].AsNumber();
 			return new LocalDate(year, month, day);
 		}
 

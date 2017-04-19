@@ -19,14 +19,14 @@ namespace Native
 			readonly TimePickerBase _tp;
 			public override PropertyObject Object { get { return _tp; } }
 			public override bool SupportsOriginSetter { get { return false; } }
-			public override string Get()
+			public override string Get(PropertyObject obj)
 			{
 				LocalTime time = ZonedDateTime.Now.TimeOfDay;
 				lock (_tp)
 					time = _tp._out;
 				return ToJSON(time);
 			}
-			public override void Set(string value, IPropertyListener origin)
+			public override void Set(PropertyObject obj, string value, IPropertyListener origin)
 			{
 				var newTime = FromJSON(JsonReader.Parse(value));
 				lock (_tp)
@@ -42,7 +42,7 @@ namespace Native
 				new ScriptProperty<TimePickerBase, string>("CurrentTime", getCurrentTimeProperty, ".notNull().parseJson()"),
 				new ScriptMethod<TimePickerBase>("setTime", setTime, ExecutionThread.MainThread));
 		}
-		
+
 		CurrentTimeProperty _currentTimeProperty;
 		static Property<string> getCurrentTimeProperty(TimePickerBase timePicker)
 		{
@@ -81,8 +81,8 @@ namespace Native
 
 		static LocalTime FromJSON(JsonReader json)
 		{
-			var hour = json["hour"].AsInteger();
-			var minute = json["minute"].AsInteger();
+			var hour = (int)json["hour"].AsNumber();
+			var minute = (int)json["minute"].AsNumber();
 			return new LocalTime(hour, minute);
 		}
 	}
