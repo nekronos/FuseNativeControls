@@ -62,15 +62,27 @@ namespace Native.Android
 		[Foreign(Language.Java)]
 		static void SetTime(Java.Object handle, int hour, int minute)
 		@{
-			((android.widget.TimePicker)handle).setHour(hour);
-			((android.widget.TimePicker)handle).setMinute(minute);
+			android.widget.TimePicker tp = (android.widget.TimePicker)handle;
+			if (android.os.Build.VERSION.SDK_INT >= 23) {
+				tp.setHour(hour);
+				tp.setMinute(minute);
+			} else {
+				tp.setCurrentHour(hour);
+				tp.setCurrentMinute(minute);
+			}
 		@}
 
 		[Foreign(Language.Java)]
 		static void GetTime(Java.Object handle, int[] time)
 		@{
-			time.set(0, ((android.widget.TimePicker)handle).getHour());
-			time.set(1, ((android.widget.TimePicker)handle).getMinute());
+			android.widget.TimePicker tp = (android.widget.TimePicker)handle;
+			if (android.os.Build.VERSION.SDK_INT >= 23) {
+				time.set(0, tp.getHour());
+				time.set(1, tp.getMinute());
+			} else {
+				time.set(0, tp.getCurrentHour());
+				time.set(1, tp.getCurrentMinute());
+			}
 		@}
 
 		[Foreign(Language.Java)]
